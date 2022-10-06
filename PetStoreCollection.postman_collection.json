@@ -1,0 +1,823 @@
+{
+	"info": {
+		"_postman_id": "65d22022-08f3-446d-9944-2b67d1cb9561",
+		"name": "PetStoreCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "загрузка фото питомца",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "petid",
+							"value": "{{GostPost}}",
+							"type": "text"
+						},
+						{
+							"key": "additionalMetadata",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/инет/Downloads/1-792.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/pet/432/uploadImage",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"pet",
+						"432",
+						"uploadImage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "добавление питомца",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"let a = Math.floor(Math.random() * 4000);\r",
+							"pm.environment.set(\"GostPost\", a);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Равенство id на сервере и в запросе\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.eql(pm.environment.get(\"GostPost\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\":\"{{GostPost}}\",\r\n  \"category\": {\r\n    \"id\": 23,\r\n    \"name\": \"dog\"\r\n  },\r\n  \"name\": \"ball\",\r\n  \"photoUrls\": [\r\n    \"http://petstore.swagger.io/v2/pet/432/Files/\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 0,\r\n      \"name\": \"cooldog\"\r\n    },\r\n    {\r\n      \"id\": 1,\r\n      \"name\": \"funydog\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/pet",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "изменение питомца",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Проверка тегов на заполнение\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.tags[0].name).to.eql(\"cooldog\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Проверка тегов на заполнение\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.tags[1].name).to.eql(\"funydog\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"{{GostPost}}\",\r\n  \"category\": {\r\n    \"id\": 23,\r\n    \"name\": \"dog\"\r\n  },\r\n  \"name\": \"coolball\",\r\n  \"photoUrls\": [\r\n    \"http://petstore.swagger.io/v2/pet/432/Files/\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 0,\r\n      \"name\": \"cooldog\"\r\n    },\r\n    {\r\n      \"id\": 1,\r\n      \"name\": \"funydog\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/pet",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "поиск питомца по ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"проверка на нахождение питомца\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var id = pm.environment.get(\"GostPost\");\r",
+							"    pm.expect(jsonData.id).to.eql(id);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BasedUrl}}/pet/{{GostPost}}",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"pet",
+						"{{GostPost}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Обновление питомца по данным с формы",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "petId",
+							"value": "{{GostPost}}",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "coolball",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "available",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/pet/{{GostPost}}",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"pet",
+						"{{GostPost}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "удаление питомца",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"проверка id\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var id = pm.environment.get(\"GostPost\");\r",
+							"    pm.expect(jsonData.message).to.eql(\"\"+id);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/pet/{{GostPost}}",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"pet",
+						"{{GostPost}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "возвращение инвентарь по статусу",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BasedUrl}}/store/inventory",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"store",
+						"inventory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "покупка питомца",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"a = Math.floor(Math.random() * 4000);\r",
+							"pm.environment.set(\"SellId\", a);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"проверка id питомца\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var id = pm.environment.get(\"GostPost\");\r",
+							"    pm.expect(jsonData.petId).to.eql(id);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"проверка id покупки\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var id = pm.environment.get(\"SellId\");\r",
+							"    pm.expect(jsonData.id).to.eql(id);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"{{SellId}}\",\r\n  \"petId\": \"{{GostPost}}\",\r\n  \"quantity\": 1,\r\n  \"shipDate\": \"2021-10-19T09:17:14.933Z\",\r\n  \"status\": \"placed\",\r\n  \"complete\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/store/order",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"store",
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "поиск заказа по ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"проверка id питомца\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var id = pm.environment.get(\"GostPost\");\r",
+							"    pm.expect(jsonData.petId).to.eql(id);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"проверка id покупки\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var id = pm.environment.get(\"SellId\");\r",
+							"    pm.expect(jsonData.id).to.eql(id);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BasedUrl}}/store/order/{{SellId}}",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"store",
+						"order",
+						"{{SellId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "удаление заказа",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BasedUrl}}/store/order/{{SellId}}",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"store",
+						"order",
+						"{{SellId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "создание списка пользователей",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n{\r\n\"id\": 780,\r\n\"username\": \"Qrowly\",\r\n\"firstName\": \"Vadim\",\r\n\"lastName\": \"bazilenko\",\r\n\"email\": \"bazilenkovadik@mail.ru\",\r\n\"password\": \"ghj100qgfhjkm\",\r\n\"phone\": \"89536443474\",\r\n\"userStatus\": 0\r\n},\r\n{\r\n\"id\": 781,\r\n\"username\": \"ifSazy\",\r\n\"firstName\": \"Sasha\",\r\n\"lastName\": \"Bazilenko\",\r\n\"email\": \"bazilenkoaleksandr@mail.ru\",\r\n\"password\": \"228308556\",\r\n\"phone\": \"89203972006\",\r\n\"userStatus\": 0\r\n},\r\n{\r\n\"id\": 782,\r\n\"username\": \"loshka\",\r\n\"firstName\": \"Maxim\",\r\n\"lastName\": \"Ivaonov\",\r\n\"email\": \"Ivanov.Max@mail.ru\",\r\n\"password\": \"ghj100Max123\",\r\n\"phone\": \"89253456734\",\r\n\"userStatus\": 0\r\n}\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/user/createWithList",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"user",
+						"createWithList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "получение пользователя",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BasedUrl}}/user/JonXXX",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"user",
+						"JonXXX"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Изменить пользователя",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 780,\r\n  \"username\": \"JonXXX\",\r\n  \"firstName\": \"Jon\",\r\n  \"lastName\": \"Sino\",\r\n  \"email\": \"JonSino234@gmail.com\",\r\n  \"password\": \"345623\",\r\n  \"phone\": \"893465462\",\r\n  \"userStatus\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/user/JonXXX",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"user",
+						"JonXXX"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "удаление пользователя",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BasedUrl}}/user/nagibator228",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"user",
+						"nagibator228"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "авторизация",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BasedUrl}}/user/login?username =JonXXX&password =345623",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"user",
+						"login"
+					],
+					"query": [
+						{
+							"key": "username ",
+							"value": "JonXXX"
+						},
+						{
+							"key": "password ",
+							"value": "345623"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "поиск питомцев по статусу",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/pet/findByStatus?status=available",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"pet",
+						"findByStatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "available"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "получение питомца",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/pet/432",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"pet",
+						"432"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "выход из сессии",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BasedUrl}}/user/logout",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"user",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "создание массива пользователей",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n  {\r\n    \"id\": 784,\r\n    \"username\": \"TaniaBestBest\",\r\n    \"firstName\": \"Tania\",\r\n    \"lastName\": \"Jobs\",\r\n    \"email\": \"TaniaTania@gmail.com\",\r\n    \"password\": \"345623\",\r\n    \"phone\": \"893465462\",\r\n    \"userStatus\": 0\r\n  },\r\n  {\r\n    \"id\": 785,\r\n    \"username\": \"AlinaCross\",\r\n    \"firstName\": \"Alina\",\r\n    \"lastName\": \"Pikls\",\r\n    \"email\": \"APikls@gmail.com\",\r\n    \"password\": \"jh567gfd\",\r\n    \"phone\": \"893465462\",\r\n    \"userStatus\": 0\r\n  },\r\n  {\r\n    \"id\": 786,\r\n    \"username\": \"HostBest\",\r\n    \"firstName\": \"Vasili\",\r\n    \"lastName\": \"Spaz\",\r\n    \"email\": \"SpazHz43@gmail.com\",\r\n    \"password\": \"iouedxzv\",\r\n    \"phone\": \"893465462\",\r\n    \"userStatus\": 0\r\n  }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/user/createWithArray",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"user",
+						"createWithArray"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "создание пользователя",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 894,\r\n  \"username\": \"IljazAstana\",\r\n  \"firstName\": \"Iljaz\",\r\n  \"lastName\": \"Javidze\",\r\n  \"email\": \"AstanaTheBeast@gmail.com\",\r\n  \"password\": \"tercxhgjf\",\r\n  \"phone\": \"8976432\",\r\n  \"userStatus\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BasedUrl}}/user",
+					"host": [
+						"{{BasedUrl}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
